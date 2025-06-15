@@ -1,14 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
+import os
 
 from agno.agent import Agent
 from agno.tools.webtools import WebTools
 from agno.tools.googlesearch import GoogleSearchTools
 from agno.models.openai import OpenAIChat
-from agno.storage.agent.sqlite import SqliteAgentStorage
-
-
+from agno.storage.postgres import PostgresStorage
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -30,23 +29,25 @@ class JobSearchResult(BaseModel):
     total_jobs_found: int = Field(..., description="Total number of jobs found")
     jobs: List[JobDetails] = Field(..., description="List of job postings")
 
-class Agent:
+class Agent_Class:
     def __init__(self):
-        self.agent = Agent()
         self.db_file = "job_search.db"
         self.response_structure = JobSearchResult
         self.model = OpenAIChat(id="gpt-4o-mini")
-
-    def create_agent(self):
-        Agent = self.agent(
+        self.db_url = os.getenv("DATABASE_URL")
+        self.storage = PostgresStorage(
+            table_name="job_search_agents",
+            schema="ai",
+            db_url=self.db_url,
+            schema_version=1,
+            auto_upgrade_schema=True
+        )
+        self.agent = Agent(
             name="Job Discovery Agent",
             role="AI/ML Job Discovery Specialist",
             model=self.model,
+            storage=self.storage,
             tools=[WebTools(), GoogleSearchTools()], show_tool_calls=True,
-            storage=SqliteAgentStorage(
-                    table_name="job_discovery_agent",
-                    db_file="job_search.db"
-                ),
             description= """ 
             You are an AI/ML Job Discovery Agent specialized in finding relevant job opportunities.
                 Your primary focus is on:
@@ -72,8 +73,8 @@ class Agent:
                 "Store all findings with search date and source information",
                 "Job posting must be int the last 24 hours only newly posted jobs must be returned"],
             response_model=self.response_structure,
-            markdown=True,
-        )
-        
-        return Agent
+            markdown=True,)
+
+    def create_agent(self):
+        return self.agent
 
