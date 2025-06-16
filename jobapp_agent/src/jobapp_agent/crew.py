@@ -3,7 +3,9 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai_tools import SerperDevTool
 from typing import List
+from dotenv import load_dotenv
 
+load_dotenv()
 
 @CrewBase
 class JobappAgent():
@@ -23,7 +25,7 @@ class JobappAgent():
             max_reasoning_attempts=2,
             max_iter=5,
             max_max_execution_time=1800,
-            tools=[SerperDevTool()]
+            tools=[SerperDevTool(country="Turkey", n_results=15)]
         )
 
 
