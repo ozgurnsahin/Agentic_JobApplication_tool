@@ -12,14 +12,17 @@ def run():
     """
     Run the crew.
     """
+    current_date = datetime.now()
     inputs = {
         'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+        'current_year': str(current_date.year),
+        'current_date': current_date.strftime('%Y-%m-%d'),
+        'current_month': current_date.strftime('%Y-%m')
     }
     
     try:
-        JobappAgent().crew().kickoff(inputs=inputs)
-        
+        result = JobappAgent().crew().kickoff(inputs=inputs)
+        print(result)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 

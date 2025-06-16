@@ -1,6 +1,6 @@
 research_task:
   description: >
-    Search for AI/ML, Data Engineering, and Data Science job opportunities that match Özgür's profile:
+    Search for CURRENT AI/ML, Data Engineering, and Data Science job opportunities in Turkey (prioritize) and remote positions that match Özgür's profile::
     
     Target Skills to Match:
     - Programming: Python, JavaScript, Go, SQL
@@ -12,8 +12,14 @@ research_task:
     - Job platforms: LinkedIn, Kariyer.net, Glassdoor, Indeed Turkey
     - Location: Turkey (especially Istanbul) + Remote globally  
     - Company size: 11+ employees
-    - Job posting age: Last 24 hours only
+    - Job posting age: Posted today Last 24 hours only 
     - Job types: Remote, Hybrid, On-site
+
+     IMPORTANT: Use these specific search queries in order:
+    1. "AI machine learning jobs Istanbul {current_year}"
+    2. "veri mühendisi işleri Istanbul {current_year}"  
+    3. "data scientist Turkey {current_year}"
+    4. "remote AI developer jobs {current_year}"
     
     For each job found, extract:
     - Job title and company name
@@ -24,7 +30,8 @@ research_task:
     - Experience level required
     - Direct URL to job posting
     - Date when job was found
-    
+
+    REJECT any job posting from 2023 or earlier years.
     Focus on quality over quantity - return only jobs that are genuinely relevant
     to Özgür's AI/ML and data engineering background.
   expected_output: >
