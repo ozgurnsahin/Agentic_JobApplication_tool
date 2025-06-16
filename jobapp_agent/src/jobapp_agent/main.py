@@ -3,6 +3,7 @@ import warnings
 
 from datetime import datetime
 
+from .db.database import CrewAIJobStorage
 from jobapp_agent.crew import JobappAgent
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
@@ -12,14 +13,14 @@ def run():
     """
     Run the crew.
     """
-    current_date = datetime.now()
     inputs = {
         'topic': 'AI LLMs',
-        'current_year': str(current_date.year),
-        'current_date': current_date.strftime('%Y-%m-%d'),
-        'current_month': current_date.strftime('%Y-%m')
+        'current_year': str(datetime.now().year),
+        'current_date': datetime.now().strftime('%Y-%m-%d'),
+        'current_month': datetime.now().strftime('%Y-%m')
     }
-    
+    db = CrewAIJobStorage()
+    db.create_schema()
     try:
         result = JobappAgent().crew().kickoff(inputs=inputs)
         print(result)

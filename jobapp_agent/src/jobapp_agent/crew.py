@@ -1,31 +1,35 @@
+from .db.database import CrewAIJobStorage
+
+from typing import List
+
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from crewai_tools import SerperDevTool
-from typing import List
-from dotenv import load_dotenv
+from crewai_tools import SerperDevTool, PGSearchTool
 
+from dotenv import load_dotenv
 load_dotenv()
 
 @CrewBase
 class JobappAgent():
     """JobappAgent crew"""
-
     agents: List[BaseAgent]
     tasks: List[Task]
 
     @agent
     def researcher(self) -> Agent:
+        db = CrewAIJobStorage()
+        
         return Agent(
             config=self.agents_config['researcher'],
             verbose=True,
             inject_date=True,
             reasoning=True,
             date_format="%d-%m-%Y",
-            max_reasoning_attempts=2,
-            max_iter=5,
-            max_max_execution_time=1800,
-            tools=[SerperDevTool(country="Turkey", n_results=15)]
+            max_reasoning_attempts=3,
+            max_iter=10,
+            max_max_execution_time=3600,
+            tools=[SerperDevTool(country="Turkey", n_results=15),PGSearchTool(db_uri=db.connection_url,table_name='jobs')]
         )
 
 

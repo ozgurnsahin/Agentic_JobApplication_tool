@@ -15,11 +15,11 @@ research_task:
     - Job posting age: Posted today Last 24 hours only 
     - Job types: Remote, Hybrid, On-site
 
-     IMPORTANT: Use these specific search queries in order:
-    1. "AI machine learning jobs Istanbul {current_year}"
-    2. "veri mühendisi işleri Istanbul {current_year}"  
-    3. "data scientist Turkey {current_year}"
-    4. "remote AI developer jobs {current_year}"
+    IMPORTANT: Use these specific search queries in order:
+    1. "AI machine learning jobs Istanbul "
+    2. "Veri mühendisi işleri Istanbul "  
+    3. "Data scientist Turkey "
+    4. "Remote AI developer jobs "
     
     For each job found, extract:
     - Job title and company name
