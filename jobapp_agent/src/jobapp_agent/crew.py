@@ -1,4 +1,5 @@
 from .db.database import CrewAIJobStorage
+from .tools.job_database_tool import JobDatabaseTool 
 
 from typing import List
 
@@ -29,14 +30,15 @@ class JobappAgent():
             max_reasoning_attempts=3,
             max_iter=10,
             max_max_execution_time=3600,
-            tools=[SerperDevTool(country="Turkey", n_results=15),PGSearchTool(db_uri=db.connection_url,table_name='jobs')]
+            tools=[SerperDevTool(country="Turkey", n_results=15),PGSearchTool(db_uri=db.connection_url,table_name='jobs'),JobDatabaseTool()],
+            respect_context_window=True
         )
 
 
     @task
     def research_task(self) -> Task:
         return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
+            config=self.tasks_config['research_task'],
         )
 
 

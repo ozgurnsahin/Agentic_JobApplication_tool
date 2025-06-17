@@ -19,9 +19,10 @@ def run():
         'current_date': datetime.now().strftime('%Y-%m-%d'),
         'current_month': datetime.now().strftime('%Y-%m')
     }
-    db = CrewAIJobStorage()
-    db.create_schema()
     try:
+        db = CrewAIJobStorage()
+        db.create_schema()
+        
         result = JobappAgent().crew().kickoff(inputs=inputs)
         print(result)
     except Exception as e:

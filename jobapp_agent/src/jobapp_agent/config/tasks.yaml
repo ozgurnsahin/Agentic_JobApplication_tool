@@ -1,6 +1,6 @@
 research_task:
   description: >
-    Search for CURRENT AI/ML, Data Engineering, and Data Science job opportunities in Turkey (prioritize) and remote positions that match Özgür's profile::
+    Search for CURRENT AI/ML, Data Engineering, and Data Science job opportunities in Turkey (prioritize) and remote positions that match Özgür's profile:
     
     Target Skills to Match:
     - Programming: Python, JavaScript, Go, SQL
@@ -29,11 +29,15 @@ research_task:
     - Key requirements and technologies mentioned
     - Experience level required
     - Direct URL to job posting
-    - Date when job was found
+    - Date when job was posted
 
     REJECT any job posting from 2023 or earlier years.
     Focus on quality over quantity - return only jobs that are genuinely relevant
     to Özgür's AI/ML and data engineering background.
+
+    FINAL STEP: After collecting all job data, use the job_database_saver tool to save 
+    all found jobs to the database. Format the jobs as a JSON array and pass it to the tool.
+
   expected_output: >
     A structured JSON report containing:
     - Search metadata (keyword used, total jobs found, search date)
@@ -46,4 +50,5 @@ research_task:
     
     Minimum 5 jobs, maximum 15 high-quality matches.
     Each job entry must include all required fields.
+
   agent: researcher
