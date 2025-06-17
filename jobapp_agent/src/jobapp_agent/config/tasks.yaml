@@ -1,25 +1,35 @@
 research_task:
   description: >
-    Search for CURRENT AI/ML, Data Engineering, and Data Science job opportunities in Turkey (prioritize) and remote positions that match Özgür's profile:
+    STEP 1 - ANALYZE CV FIRST:
+    Use the PDFSearchTool to analyze Özgür's CV and extract key information before starting job search.
     
-    Target Skills to Match:
-    - Programming: Python, JavaScript, Go, SQL
-    - AI/ML: OpenAI API, LangChain, spaCy, scikit-learn, TensorFlow, RAG systems
-    - Data: ETL processes, BigQuery, PostgreSQL, MongoDB
-    - Backend: FastAPI, microservices, gRPC
+    Extract the following information from the CV:
+    - Current technical skills and programming languages 
+    - Recent work experience and technologies used
+    - AI/ML expertise and tools (OpenAI, LangChain, etc.)
+    - Data engineering technologies (PostgreSQL, MongoDB, etc.)
+    - Location preferences and experience level
+    
+    Use queries like:
+    - "technical skills programming languages Python JavaScript"
+    - "AI machine learning OpenAI LangChain experience"
+    - "data engineering PostgreSQL MongoDB BigQuery"
+    - "recent work experience technologies projects"
+    
+    STEP 2 - CREATE PERSONALIZED SEARCH QUERIES:
+    Based on the CV analysis, create 3-4 targeted job search queries that match 
+    Özgür's actual skills and experience. Focus on the most relevant technologies found in the CV.
+    
+    STEP 3 - SEARCH FOR JOBS:
+    Use your personalized queries to search for AI/ML, Data Engineering, and Data Science 
+    job opportunities in Turkey and remote positions.
     
     Search Criteria:
     - Job platforms: LinkedIn, Kariyer.net, Glassdoor, Indeed Turkey
     - Location: Turkey (especially Istanbul) + Remote globally  
     - Company size: 11+ employees
-    - Job posting age: Posted today Last 24 hours only 
+    - Job posting age: Last 24 hours only 
     - Job types: Remote, Hybrid, On-site
-
-    IMPORTANT: Use these specific search queries in order:
-    1. "AI machine learning jobs Istanbul "
-    2. "Veri mühendisi işleri Istanbul "  
-    3. "Data scientist Turkey "
-    4. "Remote AI developer jobs "
     
     For each job found, extract:
     - Job title and company name
@@ -29,14 +39,15 @@ research_task:
     - Key requirements and technologies mentioned
     - Experience level required
     - Direct URL to job posting
-    - Date when job was posted
+    - Date when job was found
 
     REJECT any job posting from 2023 or earlier years.
-    Focus on quality over quantity - return only jobs that are genuinely relevant
-    to Özgür's AI/ML and data engineering background.
+    Focus on quality over quantity - return only jobs that genuinely match 
+    the skills extracted from Özgür's CV.
 
-    FINAL STEP: After collecting all job data, use the job_database_saver tool to save 
-    all found jobs to the database. Format the jobs as a JSON array and pass it to the tool.
+    STEP 4 - SAVE TO DATABASE:
+    After collecting all job data, use the job_database_saver tool to save 
+    all found jobs to the database. Format the jobs as a JSON array.
 
   expected_output: >
     A structured JSON report containing:
