@@ -3,7 +3,6 @@ import warnings
 
 from datetime import datetime
 
-from .db.database import CrewAIJobStorage
 from jobapp_agent.crew import JobappAgent
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
@@ -20,11 +19,7 @@ def run():
         'current_month': datetime.now().strftime('%Y-%m')
     }
     try:
-        db = CrewAIJobStorage()
-        db.create_schema()
-        
-        result = JobappAgent().crew().kickoff(inputs=inputs)
-        print(result)
+        JobappAgent().crew().kickoff(inputs=inputs)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 

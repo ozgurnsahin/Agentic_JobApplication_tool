@@ -1,5 +1,5 @@
 # JobApp AI Agent 🤖
-An intelligent job discovery AI agent system that extracts user criterias via uploaded resume, finds and filters job opportunities on numerous job sites according to criterias (location, salary, skiils title etc.) stores and optimizes users resume to serve better application service to user. 
+An intelligent job discovery AI agent system that extracts user criterias via uploaded resume, finds and filters job opportunities on numerous job sites according to criterias like location, salary, skills, title etc. stores and optimizes users resume to jobs postings to serve high quality and automated application process to users. 
 
 # 🎯 Purpose
 This prototype automates job hunting by:
@@ -18,7 +18,7 @@ Storing opportunities in a database for tracking
 
 CrewAI - AI agent orchestration
 
-OpenAI API - Natural language processing
+OpenAI API - LLM and Embedding model provider
 
 LangChain - AI application framework
 
@@ -27,30 +27,16 @@ SerperDev - Web search API
 
 # Backend
 
-Python 3.10+ - Main language
-
 PostgreSQL - Database storage
 
 FastAPI - API framework
-
-psycopg2 - Database adapter
 
 
 # Tools & Libraries
 
 Pandas - Data processing
 
-PDF Processing - CV analysis
+PyMuPDF - PDF Processing
 
 JSON - Data handling
 
-
-# 🎯 Target Sources
-
-LinkedIn (Turkey + Remote)
-
-Kariyer.net
-
-Indeed Turkey
-
-Glassdoor

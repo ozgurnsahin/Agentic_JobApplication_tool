@@ -33,7 +33,7 @@ class CrewAIJobStorage:
             self.conn.close()
         
     def create_schema(self):
-        sql_path = Path(__file__).resolve().parent / "sql" / "table_initialize.sql"
+        sql_path = Path(__file__).resolve().parent / "sql" / "create_schema.sql"
         with sql_path.open("r") as file:
             query = file.read()
         try:

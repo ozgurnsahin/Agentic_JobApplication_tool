@@ -33,7 +33,7 @@ class JobappAgent():
             max_reasoning_attempts=3,
             max_iter=10,
             max_max_execution_time=3600,
-            tools=[SerperDevTool(country="Turkey", n_results=15),
+            tools=[SerperDevTool(country="Turkey", n_results=2),
                    PGSearchTool(db_uri=db.connection_url,table_name='jobs'),
                    JobDatabaseTool(),
                    PDFSearchTool(pdf=cv_path)],

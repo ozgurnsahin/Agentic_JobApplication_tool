@@ -3,34 +3,30 @@ from typing import Type, List, Dict, Any
 from pydantic import BaseModel, Field
 from ..db.database import CrewAIJobStorage
 from datetime import datetime
-from psycopg2 import IntegrityError, DatabaseError
+from psycopg2 import DatabaseError
 
-import json
 import re
-import time
 
 
 class JobDatabaseToolInput(BaseModel):
-    jobs_json: str = Field(..., description="Output JSON string containing list of job opportunities to save to database")
+    jobs_list: List[Dict[str,Any]] = Field(..., description="List of job objects. Each job should have title, company, link, and description fields.")
 
 class JobDatabaseTool(BaseTool):
     name: str = "job_database_saver"
     description: str = (
-        "Saves job opportunities to the PostgreSQL database. Takes a JSON string with job data "
-        "and saves all jobs in a single batch transaction. Handles duplicates automatically and "
-        "ensures data consistency. Use this tool at the end of job research to store all of the found opportunities."
+        "Saves job opportunities to the PostgreSQL database. Expects a JSON string with a simple array of job objects. "
+        "Each job should have: title, company, link, description. Example: '[{\"title\":\"AI Engineer\",\"company\":\"TechCorp\",\"link\":\"https://...\",\"description\":\"...\"}]'. "
+        "Handles duplicates automatically and saves all jobs in a single transaction."
     )
     args_schema: Type[BaseModel] = JobDatabaseToolInput
 
-    def _run(self, jobs_json: str) -> str:
+    def _run(self, jobs_list: List[Dict[str,Any]]) -> str :
         try:
-            if not jobs_json:
+            if not jobs_list:
                 return "No jobs JSON returned"
-            
-            jobs_data = json.loads(jobs_json)
-            
+    
             prepared_jobs = []
-            for job in jobs_data:
+            for job in jobs_list:
                 prepared_job = self.prepare_job_data(job)
                 if prepared_job:
                     prepared_jobs.append(prepared_job)
@@ -41,15 +37,13 @@ class JobDatabaseTool(BaseTool):
             result = self.save_jobs(prepared_jobs)
             return result
         
-        except json.JSONDecodeError as e:
-            return f"Error: Invalid JSON format - {str(e)}"
+        except Exception as e:
+            return f"Error runing the tool: {str(e)}"
             
     def prepare_job_data(self, prepared_jobs : Dict[str, Any]) -> Dict[str, Any]:
         try:
-            if not all(key in prepared_jobs for key in ['title', 'company', 'link']):
+            if not all(key in prepared_jobs for key in ['title', 'company', 'link', 'description']):
                 return None
-            
-        #company = self.clean_company_name(prepared_jobs['company'])
             
             posting_date = self.extract_posting_date(prepared_jobs.get('description', ''))
             
@@ -57,7 +51,7 @@ class JobDatabaseTool(BaseTool):
                 'title': prepared_jobs['title'],  
                 'company': prepared_jobs['company'],    
                 'link': prepared_jobs['link'],   
-                'snippet': prepared_jobs.get('description', ''),  
+                'snippet': prepared_jobs.get('description', '')[:5000],  
                 'position': prepared_jobs.get('position', 0),
                 'source': 'crewai_agent',
                 'scraped_date': posting_date
@@ -67,18 +61,6 @@ class JobDatabaseTool(BaseTool):
         except Exception as e:
             print(f"Error preparing job data: {e}")
             return None
-    
-    """ def clean_company_name(self, company_name : str) -> str:
-        if not company_name:
-            return ""
-        
-        company = company_name.strip()
-        company = re.sub(r'\s+', ' ', company)
-        
-        company = re.sub(r'\b(Inc\.?|Ltd\.?|LLC|Corp\.?|Corporation)\b', '', company, flags=re.IGNORECASE)
-        company = company.strip()
-        
-        return company """
         
     def extract_posting_date(self, description: str) -> str:
         if not description:
@@ -107,43 +89,48 @@ class JobDatabaseTool(BaseTool):
         
 
     def save_jobs(self, jobs: List[Dict[str, Any]]) -> str:
-        max_retries = 3
-        retry_delay = 5
-        
-        for attempt in range(max_retries):
-            try:
-                with CrewAIJobStorage() as db:
-                    saved_count = 0
-                    duplicate_count = 0
-                    
-                    for job in jobs:
-                        try:
-                            insert_query = """
-                                INSERT INTO jobs (title, company, link, snippet, position, source, scraped_date)
-                                VALUES (%(title)s, %(company)s, %(link)s, %(snippet)s, %(position)s, %(source)s, 
-                                TO_DATE(%(scraped_date)s, 'DD/MM/YYYY'))"""
-                            
-                            db.cursor.execute(insert_query, job)
-                            saved_count += 1
-                            
-                        except IntegrityError:
-                            duplicate_count += 1
-                            db.conn.rollback()
-                            continue
-                    
-                    db.conn.commit()
-                    
-                    return f"Successfully saved {saved_count} jobs to database. Skipped {duplicate_count} duplicates."
-                    
-            except DatabaseError as e:
-                if attempt < max_retries - 1:
-                    print(f"Database error on attempt {attempt + 1}, retrying in {retry_delay} seconds...")
-                    time.sleep(retry_delay)
-                    continue
-                else:
-                    return f"Failed to save jobs after {max_retries} attempts. Last error: {str(e)}"
+        try:
+            with CrewAIJobStorage() as db:
+                if not self.check_schema(db):
+                    return "Failed to ensure database schema exists"
+                
+                insert_query = """
+                    INSERT INTO jobs (title, company, link, snippet, position, source, scraped_date)
+                    VALUES (%(title)s, %(company)s, %(link)s, %(snippet)s, %(position)s, %(source)s, 
+                            TO_DATE(%(scraped_date)s, 'DD/MM/YYYY'))
+                    ON CONFLICT (company, title, link) DO NOTHING
+                """
+                
+                db.cursor.executemany(insert_query, jobs)
+                
+                inserted_count = db.cursor.rowcount
+                duplicate_count = len(jobs) - inserted_count
+                
+                # Commit all inserts
+                db.conn.commit()
+                
+                return f"Successfully saved {inserted_count} jobs to database. Skipped {duplicate_count} duplicates."
             
-            except Exception as e:
-                return f"Unexpected error during database save: {str(e)}"
+        except DatabaseError as e:
+            return f"Failed to save jobs - maximum retries exceeded {e}"
+    
+    def check_schema(self, db) -> bool:
+        try:
+            check_query = """
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_name = 'jobs'
+                );
+            """
             
-        return "Failed to save jobs - maximum retries exceeded"
+            db.cursor.execute(check_query)
+            table_exists = db.cursor.fetchone()[0]
+            
+            if not table_exists:
+                db.create_schema()
+                print("Jobs table created successfully")
+            
+            return True
+        except DatabaseError as e:
+            print(f"Error checking/creating schema: {e}")
+            return False

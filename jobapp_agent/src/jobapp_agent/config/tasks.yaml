@@ -2,7 +2,7 @@ research_task:
   description: >
     STEP 1 - ANALYZE CV FIRST:
     Use the PDFSearchTool to analyze Özgür's CV and extract key information before starting job search.
-    
+
     Extract the following information from the CV:
     - Current technical skills and programming languages 
     - Recent work experience and technologies used
@@ -21,15 +21,20 @@ research_task:
     Özgür's actual skills and experience. Focus on the most relevant technologies found in the CV.
     
     STEP 3 - SEARCH FOR JOBS:
-    Use your personalized queries to search for AI/ML, Data Engineering, and Data Science 
-    job opportunities in Turkey and remote positions.
+    Use SerperDevTool to search for AI/ML, Data Engineering, 
+    and Data Science job opportunities. 
     
     Search Criteria:
     - Job platforms: LinkedIn, Kariyer.net, Glassdoor, Indeed Turkey
-    - Location: Turkey (especially Istanbul) + Remote globally  
-    - Company size: 11+ employees
+    - Location: Turkey (especially Istanbul)
+    - Company size: 30+ employees
     - Job posting age: Last 24 hours only 
     - Job types: Remote, Hybrid, On-site
+
+    Search queries like:
+    - "AI/ML jobs Istanbul site:kariyer.net"
+    - "Data Scientist jobs Turkey 2025 site:linkedin.com"  
+    - "Data Engineer jobs Turkey 2025 site:glassdoor.com"
     
     For each job found, extract:
     - Job title and company name
@@ -42,6 +47,8 @@ research_task:
     - Date when job was found
 
     REJECT any job posting from 2023 or earlier years.
+    REJECT any job titles orpostions other than given positions.
+    REJECT any platforms other than the LinkedIn, Kariyer.net, Glassdoor, Indeed Turkey.
     Focus on quality over quantity - return only jobs that genuinely match 
     the skills extracted from Özgür's CV.
 
@@ -51,15 +58,32 @@ research_task:
 
   expected_output: >
     A structured JSON report containing:
-    - Search metadata (keyword used, total jobs found, search date)
     - List of relevant job opportunities with complete details:
       * title, company, location, salary
-      * description summary and key requirements  
-      * technologies and tools mentioned
-      * experience level and work type
+      * description summary
       * job posting URL and date found
     
-    Minimum 5 jobs, maximum 15 high-quality matches.
+    IMPORTANT: Format the jobs as a simple JSON array like this:
+    [
+      {
+        "title": "AI Engineer",
+        "company": "Tech Company",
+        "link": "https://example.com/job",
+        "description": "Job description here",
+        "position": 1
+      },
+      {
+        "title": "Data Scientist", 
+        "company": "Another Company",
+        "link": "https://example.com/job2",
+        "description": "Another job description",
+        "position": 2
+      }
+    ]
+    
+    Do NOT include metadata or nested structures - just the clean job array.
+    
+    Minimum 1 jobs, maximum 2 high-quality matches.
     Each job entry must include all required fields.
 
   agent: researcher
