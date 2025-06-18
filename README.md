@@ -1,5 +1,5 @@
 # JobApp AI Agent 🤖
-An intelligent job discovery system that automatically finds relevant AI/ML, Data Engineering, and Data Science job opportunities in Turkey and remote positions using AI agents.
+An intelligent job discovery AI agent system that extracts user criterias via uploaded resume, finds and filters job opportunities on numerous job sites according to criterias (location, salary, skiils title etc.) stores and optimizes users resume to serve better application service to user. 
 
 # 🎯 Purpose
 This prototype automates job hunting by:
