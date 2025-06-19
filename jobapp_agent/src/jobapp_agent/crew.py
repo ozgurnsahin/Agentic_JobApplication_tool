@@ -1,6 +1,7 @@
 from .db.database import CrewAIJobStorage
 from .tools.job_database_tool import JobDatabaseTool 
 from .tools.duckduckgo_tool import DuckDuckGoTool
+from langchain_ollama import OllamaLLM
 
 from typing import List
 import os
@@ -27,11 +28,12 @@ class JobappAgent():
         
         return Agent(
             config=self.agents_config['researcher'],
+            llm=OllamaLLM(model="ollama/deepseek-r1:1.5b", base_url="http://localhost:11434", temperature=0),
             verbose=True,
             inject_date=True,
             reasoning=True,
             date_format="%d-%m-%Y",
-            max_reasoning_attempts=3,
+            max_reasoning_attempts=5,
             max_iter=10,
             max_max_execution_time=3600,
             tools=[DuckDuckGoTool(),

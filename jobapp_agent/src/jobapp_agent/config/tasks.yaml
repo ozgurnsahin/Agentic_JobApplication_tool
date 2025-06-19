@@ -11,11 +11,12 @@ research_task:
     - Location preferences and experience level
     
     Use queries like:
-    - "technical skills programming languages Python JavaScript"
-    - "AI machine learning OpenAI LangChain experience"
-    - "data engineering PostgreSQL MongoDB BigQuery"
-    - "recent work experience technologies projects"
-    
+    - "extract complete work experience section including all companies positions dates responsibilities technologies achievements metrics"
+    - "extract complete technical skills section programming languages technologies frameworks libraries applications tools"
+    - "extract complete projects section with all project names descriptions technologies tech stacks github links achievements"
+    - "extract education background certifications courses degrees university details"
+    Generalize the queries according to users CV.
+        
     STEP 2 - CREATE PERSONALIZED SEARCH QUERIES:
     Based on the CV analysis, create 3-4 targeted job search queries that match 
     Özgür's actual skills and experience. Focus on the most relevant technologies found in the CV.
@@ -32,9 +33,10 @@ research_task:
     - Job types: Remote, Hybrid, On-site
 
     Search queries like:
-    - "AI/ML jobs Istanbul site:kariyer.net"
-    - "Data Scientist jobs Turkey 2025 site:linkedin.com"  
-    - "Data Engineer jobs Turkey 2025 site:glassdoor.com"
+    - "\"Data Scientist\" OR "\"AI Engineer\" OR "\"ML Engineer\" OR "\"Data Engineer\"  OR \"Machine Learning Engineer\" (junior OR mid OR senior OR lead) -manager -director site:linkedin.com Turkey"
+    - "\"Data Scientist\" OR "\"AI Engineer\" OR "\"Data Engineer\" OR \"Python Developer\" (junior OR mid-level OR senior OR lead) -manager -director site:kariyer.net Istanbul"
+    - "\"Data Scientist\" OR "\"AI Engineer\" OR "\"Backend Developer\" OR "\"Data Engineer\"  OR \"AI Developer\" (mid OR senior OR lead) -manager -director site:glassdoor.com Turkey"
+    - "\"Data Scientist\" OR "\"AI Engineer\" OR "\"Full Stack Developer\" OR "\"Data Engineer\"  (junior OR senior OR lead) -manager -director site:indeed.com Turkey"
     
     For each job found, extract:
     - Job title and company name
