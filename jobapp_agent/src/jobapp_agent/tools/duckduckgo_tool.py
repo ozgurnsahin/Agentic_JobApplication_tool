@@ -6,7 +6,7 @@ from duckduckgo_search import DDGS
 
 class DuckDuckGoToolInput(BaseModel):
     query: str = Field(..., description="Search query for DuckDuckGo web search")
-    max_results: int = Field(default=10, description="Maximum number of search results to return")
+    max_results: int = Field(default=15, description="Maximum number of search results to return")
     region: str = Field(default="tr-tr", description="Search region (e.g., 'tr-tr' for Turkey, 'us-en' for US)")
 
 class DuckDuckGoTool(BaseTool):
@@ -18,7 +18,7 @@ class DuckDuckGoTool(BaseTool):
     )
     args_schema: Type[BaseModel] = DuckDuckGoToolInput
 
-    def _run(self, query: str, max_results: int = 10, region: str = "tr-tr") -> str:
+    def _run(self, query: str, max_results: int = 15, region: str = "tr-tr") -> str:
         try:
             search_results = self.perform_search(query, max_results, region)
             

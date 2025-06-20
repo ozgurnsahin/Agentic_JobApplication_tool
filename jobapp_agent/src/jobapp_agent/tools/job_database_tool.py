@@ -51,7 +51,7 @@ class JobDatabaseTool(BaseTool):
                 'title': prepared_jobs['title'],  
                 'company': prepared_jobs['company'],    
                 'link': prepared_jobs['link'],   
-                'snippet': prepared_jobs.get('description', '')[:5000],  
+                'snippet': prepared_jobs.get('description', ''),  
                 'position': prepared_jobs.get('position', 0),
                 'source': 'crewai_agent',
                 'scraped_date': posting_date
@@ -106,7 +106,6 @@ class JobDatabaseTool(BaseTool):
                 inserted_count = db.cursor.rowcount
                 duplicate_count = len(jobs) - inserted_count
                 
-                # Commit all inserts
                 db.conn.commit()
                 
                 return f"Successfully saved {inserted_count} jobs to database. Skipped {duplicate_count} duplicates."
@@ -117,19 +116,25 @@ class JobDatabaseTool(BaseTool):
     def check_schema(self, db) -> bool:
         try:
             check_query = """
-                SELECT EXISTS (
-                    SELECT FROM information_schema.tables 
-                    WHERE table_name = 'jobs'
-                );
+                SELECT 
+                    (SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_name = 'jobs'
+                    )) as jobs_exists,
+                    (SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_name = 'optimized_cvs'
+                    )) as cvs_exists;
             """
-            
             db.cursor.execute(check_query)
-            table_exists = db.cursor.fetchone()[0]
+            result = db.cursor.fetchone()
+            jobs_exists, cvs_exists = result
             
-            if not table_exists:
+            if not jobs_exists or not cvs_exists:
+                print(f"Tables status - jobs: {jobs_exists}, optimized_cvs: {cvs_exists}")
                 db.create_schema()
-                print("Jobs table created successfully")
-            
+                print("Missing tables created successfully")
+                
             return True
         except DatabaseError as e:
             print(f"Error checking/creating schema: {e}")

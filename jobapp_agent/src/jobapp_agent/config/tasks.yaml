@@ -85,7 +85,69 @@ research_task:
     
     Do NOT include metadata or nested structures - just the clean job array.
     
-    Minimum 1 jobs, maximum 2 high-quality matches.
+    Minimum 10 jobs, maximum 15 high-quality matches.
     Each job entry must include all required fields.
 
   agent: researcher
+
+optimization_task:
+  description: >
+    STEP 1 - GET UNPROCESSED JOBS:
+    Query the database for jobs where is_processed = FALSE using PGSearchTool.
+    
+    STEP 2 - PARSE JOB REQUIREMENTS:
+    For each job, analyze the description and extract:
+    - Required technical skills (Python, JavaScript, etc.)
+    - Frameworks/libraries mentioned (FastAPI, LangChain, etc.)
+    - Databases (PostgreSQL, MongoDB, etc.)
+    - Experience level required
+    - Key industry terms and buzzwords
+    
+    STEP 3 - ANALYZE ÖZGÜR'S CV:
+    Use FileReadTool to read Özgür's complete CV content and understand
+    all his skills, experience, and projects.
+
+    STEP 4 - CALCULATE MATCH SCORE:
+    Create a matching score (0-100) using this formula:
+    
+    Required Skills Match:
+    - Count how many REQUIRED skills from job description Özgür actually has
+    - Required Skills Score = (Özgür's Required Skills / Total Required Skills) × 60
+    
+    Preferred Skills Match:
+    - Count how many PREFERRED skills Özgür has  
+    - Preferred Skills Score = (Özgür's Preferred Skills / Total Preferred Skills) × 25
+    
+    Experience Level Match:
+    - Does Özgür's experience level match job requirements?
+    - Experience Score = 15 if match, 10 if close, 0 if far off
+    
+    Final Score = Required Skills Score + Preferred Skills Score + Experience Score
+    
+    Example:
+    Job wants: Python, FastAPI, PostgreSQL (required) + Docker, AWS (preferred)
+    Özgür has: Python, FastAPI, PostgreSQL, Docker
+    Score = (3/3 × 60) + (1/2 × 25) + 15 = 60 + 12.5 + 15 = 87.5 → 88
+    
+    STEP 5 - CREATE TAILORED CV:
+    Generate an optimized CV that:
+    - Emphasizes skills that match job requirements
+    - Reorders experience to highlight relevant projects
+    - Uses job-specific keywords naturally
+    - Maintains the same format as original CV
+    - NEVER adds skills Özgür doesn't have
+    
+    STEP 6 - SAVE TO DATABASE:
+    Save the optimized CV as PDF bytes to optimized_cvs table with match score.
+    
+    STEP 7 - MARK AS PROCESSED:
+    Update jobs table: is_processed = TRUE for completed jobs.
+
+  expected_output: >
+    A report showing:
+    - Number of jobs processed
+    - Match scores for each CV created
+    - Skills emphasized for each job
+    - Any jobs skipped and why
+
+  agent: optimizer
