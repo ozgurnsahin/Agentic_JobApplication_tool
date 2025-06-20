@@ -8,7 +8,7 @@ import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from crewai_tools import SerperDevTool, PGSearchTool, PDFSearchTool, FileReadTool
+from crewai_tools import SerperDevTool, PGSearchTool, PDFSearchTool, FileReadTool, FileWriterTool
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -33,7 +33,7 @@ class JobappAgent():
             reasoning=True,
             max_iter=15,
             max_max_execution_time=3600,
-            tools=[DuckDuckGoTool(),
+            tools=[SerperDevTool(),
                    PGSearchTool(db_uri=db.connection_url,table_name='jobs'),
                    JobDatabaseTool(),
                    PDFSearchTool(pdf=cv_path)],
@@ -56,7 +56,8 @@ class JobappAgent():
             max_max_execution_time=3600,
             tools=[PGSearchTool(db_uri=db.connection_url,table_name='jobs'),
                    JobDatabaseTool(),
-                   FileReadTool(file_path=cv_path)],
+                   FileReadTool(file_path=cv_path),
+                   FileWriterTool()],
             respect_context_window=True
         )
 

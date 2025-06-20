@@ -22,8 +22,8 @@ research_task:
     Özgür's actual skills and experience. Focus on the most relevant technologies found in the CV.
     
     STEP 3 - SEARCH FOR JOBS:
-    Use duckduckgo_search tool to search for AI/ML, Data Engineering, 
-    and Data Science job opportunities. 
+    Use serperdev tool to search for AI/ML, Data Engineering, 
+    and Data Science job opportunities. ONLY 2-3 times maximum with targeted queries:
     
     Search Criteria:
     - Job platforms: LinkedIn, Kariyer.net, Glassdoor, Indeed Turkey
@@ -55,8 +55,9 @@ research_task:
     the skills extracted from Özgür's CV.
 
     STEP 4 - SAVE TO DATABASE:
-    After collecting all job data, use the job_database_saver tool to save 
+    After collecting all job data, use the job_database_tool tool to save 
     all found jobs to the database. Format the jobs as a JSON array.
+    While using job_database_tool use the save_jobs action to save jobs to the database.
 
   expected_output: >
     A structured JSON report containing:
@@ -129,6 +130,8 @@ optimization_task:
     Özgür has: Python, FastAPI, PostgreSQL, Docker
     Score = (3/3 × 60) + (1/2 × 25) + 15 = 60 + 12.5 + 15 = 87.5 → 88
     
+    IMPORTANT: Match score must be in 0-100 range
+
     STEP 5 - CREATE TAILORED CV:
     Generate an optimized CV that:
     - Emphasizes skills that match job requirements
@@ -138,7 +141,7 @@ optimization_task:
     - NEVER adds skills Özgür doesn't have
     
     STEP 6 - SAVE TO DATABASE:
-    Save the optimized CV as PDF bytes to optimized_cvs table with match score.
+    Save the optimized CV as PDF bytes to optimized_cvs table with match score using save_cv_and_mark_processed action
     
     STEP 7 - MARK AS PROCESSED:
     Update jobs table: is_processed = TRUE for completed jobs.
