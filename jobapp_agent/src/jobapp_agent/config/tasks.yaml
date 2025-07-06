@@ -22,7 +22,7 @@ research_task:
     Özgür's actual skills and experience. Focus on the most relevant technologies found in the CV.
     
     STEP 3 - SEARCH FOR JOBS:
-    Use serperdev tool to search for AI/ML, Data Engineering, 
+    Use SerperDevTool to search for AI/ML, Data Engineering, 
     and Data Science job opportunities. ONLY 2-3 times maximum with targeted queries:
     
     Search Criteria:
@@ -55,12 +55,18 @@ research_task:
     the skills extracted from Özgür's CV.
 
     STEP 4 - SAVE TO DATABASE:
-    After collecting all job data, use the job_database_tool tool to save 
-    all found jobs to the database. Format the jobs as a JSON array.
-    While using job_database_tool use the save_jobs action to save jobs to the database.
+    MANDATORY: After collecting all job data, you MUST use the job_database_tool with action="save_jobs" 
+    to save all found jobs to the database before providing final output.
+    Format the jobs as a JSON array with fields: title, company, link, description.
+    
+    Example job_database_tool call:
+    {"action": "save_jobs", "jobs_list": [{"title": "Data Engineer", "company": "Company", "link": "https://...", "description": "..."}]}
+    
+    Only after successfully saving jobs to database, provide the final output.
 
   expected_output: >
-    A structured JSON report containing:
+    FIRST: Save all jobs to database using job_database_tool
+    THEN: Provide a structured JSON report containing:
     - List of relevant job opportunities with complete details:
       * title, company, location, salary
       * description summary

@@ -2,6 +2,8 @@ from crewai.tools import BaseTool
 from typing import Type, List, Dict, Any
 from pydantic import BaseModel, Field
 from duckduckgo_search import DDGS
+import time
+import random
 
 
 class DuckDuckGoToolInput(BaseModel):
@@ -33,7 +35,15 @@ class DuckDuckGoTool(BaseTool):
             return f"Error performing DuckDuckGo search for '{query}': {str(e)}"
     
     def perform_search(self, query: str, max_results: int, region: str) -> List[Dict[str, Any]]:
-        try:
+        max_retries = 3
+        base_delay = 2
+        
+        for attempt in range(max_retries):
+            try:
+                # Add random delay to avoid rate limiting
+                delay = base_delay + random.uniform(0, 2) + (attempt * 2)
+                time.sleep(delay)
+                
                 with DDGS() as ddgs:
                     # Perform text search
                     results = list(ddgs.text(
@@ -45,8 +55,13 @@ class DuckDuckGoTool(BaseTool):
                     ))
                     
                     return results
-        except Exception as e:
-             print(f"DuckDuckGo search attempt failed: {e}")
+            except Exception as e:
+                print(f"DuckDuckGo search attempt {attempt + 1} failed: {e}")
+                if attempt == max_retries - 1:
+                    return []
+                time.sleep(base_delay * (attempt + 1))
+        
+        return []
     
     def format_search_results(self, results: List[Dict[str, Any]], query: str) -> str:
         if not results:

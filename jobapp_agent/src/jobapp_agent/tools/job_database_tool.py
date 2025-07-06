@@ -10,7 +10,7 @@ import re
 
 class JobDatabaseToolInput(BaseModel):
     action: str = Field(..., description="Action: 'save_jobs', 'get_unprocessed_jobs', 'save_cv_and_mark_processed'")
-    jobs_list: List[Dict[str,Any]] = Field(default=[], description="Job objects for saving")
+    jobs_list: Optional[List[Dict[str,Any]]] = Field(default=None, description="Job objects for saving")
     job_id: Optional[int] = Field(default=None, description="Job ID for CV operations")
     cv_data: Optional[bytes] = Field(default=None, description="PDF CV data as bytes")
     match_score: Optional[int] = Field(default=None, description="Match score 0-100")
@@ -30,7 +30,7 @@ class JobDatabaseTool(BaseTool):
     )
     args_schema: Type[BaseModel] = JobDatabaseToolInput
 
-    def _run(self, action: str, jobs_list: List[Dict[str,Any]] = None, job_id: int = None, cv_data: bytes = None, match_score: int = None) -> str:
+    def _run(self, action: str, jobs_list: Optional[List[Dict[str,Any]]] = None, job_id: Optional[int] = None, cv_data: Optional[bytes] = None, match_score: Optional[int] = None) -> str:
         try:
             if action in ["save_jobs","save jobs","save Jobs","Save jobs"]:
                 return self.save_jobs(jobs_list)
@@ -56,7 +56,6 @@ class JobDatabaseTool(BaseTool):
                 'company': prepared_jobs['company'],    
                 'link': prepared_jobs['link'],   
                 'snippet': prepared_jobs.get('description', ''),  
-                'position': prepared_jobs.get('position', 0),
                 'source': 'crewai_agent',
                 'scraped_date': posting_date
             }
@@ -92,7 +91,7 @@ class JobDatabaseTool(BaseTool):
         return datetime.now().strftime('%d/%m/%Y')
         
 
-    def save_jobs(self, jobs_list: List[Dict[str, Any]]) -> str:
+    def save_jobs(self, jobs_list: Optional[List[Dict[str, Any]]]) -> str:
         try:
             if not jobs_list:
                 return "No jobs to save"
@@ -108,8 +107,8 @@ class JobDatabaseTool(BaseTool):
                     return "Failed to ensure database schema exists"
                 
                 insert_query = """
-                    INSERT INTO jobs (title, company, link, snippet, position, source, scraped_date)
-                    VALUES (%(title)s, %(company)s, %(link)s, %(snippet)s, %(position)s, %(source)s, 
+                    INSERT INTO jobs (title, company, link, descript, source, scraped_date)
+                    VALUES (%(title)s, %(company)s, %(link)s, %(snippet)s, %(source)s, 
                             TO_DATE(%(scraped_date)s, 'DD/MM/YYYY'))
                     ON CONFLICT (company, title, link) DO NOTHING
                 """
@@ -126,7 +125,7 @@ class JobDatabaseTool(BaseTool):
         except DatabaseError as e:
             return f"Failed to save jobs - maximum retries exceeded {e}"
     
-    def query_unprocessed_jobs(self, db):
+    def query_unprocessed_jobs(self):
         try:
             with CrewAIJobStorage() as db:
                 if not self.check_schema(db):
@@ -157,6 +156,9 @@ class JobDatabaseTool(BaseTool):
                 return f"Found {len(jobs)} unprocessed jobs:\n\n" + "\n".join(job_list)   
         except DatabaseError as e:
             print(f"Error querying table: {e}")
+    
+    def _save_cv_and_mark_processed(self, job_id: int, cv_data: bytes, match_score: int) -> str:
+        return self.save_optimized_cv(job_id, cv_data, match_score)
     
     def save_optimized_cv(self, job_id: int, cv_data: bytes, match_score: int) -> str:
         if not job_id or not cv_data or match_score is None:
