@@ -100,7 +100,7 @@ research_task:
 optimization_task:
   description: >
     STEP 1 - GET UNPROCESSED JOBS:
-    Query the database for jobs where is_processed = FALSE using PGSearchTool.
+    Query the database for jobs where is_processed = FALSE using job_database_tool with action="get_unprocessed_jobs".
     
     STEP 2 - PARSE JOB REQUIREMENTS:
     For each job, analyze the description and extract:
@@ -147,7 +147,7 @@ optimization_task:
     - NEVER adds skills Özgür doesn't have
     
     STEP 6 - SAVE TO DATABASE:
-    Save the optimized CV as PDF bytes to optimized_cvs table with match score using save_cv_and_mark_processed action
+    Save the optimized CV as PDF bytes to optimized_cvs table with match score using job_database_tool with action="save_cv_and_mark_processed"
     
     STEP 7 - MARK AS PROCESSED:
     Update jobs table: is_processed = TRUE for completed jobs.

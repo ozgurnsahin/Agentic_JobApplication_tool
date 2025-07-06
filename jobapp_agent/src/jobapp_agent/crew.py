@@ -1,6 +1,5 @@
 from .db.database import CrewAIJobStorage
 from .tools.job_database_tool import JobDatabaseTool 
-# from .tools.duckduckgo_tool import DuckDuckGoTool
 
 from typing import List
 import os
@@ -50,7 +49,6 @@ class JobappAgent():
             verbose=True,
             inject_date=True,
             date_format="%d-%m-%Y",
-            # reasoning=True,
             max_iter=15,
             max_max_execution_time=3600,
             tools=[PGSearchTool(db_uri=db.connection_url,table_name='jobs'),
