@@ -7,7 +7,7 @@ import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from crewai_tools import SerperDevTool, PGSearchTool, PDFSearchTool, FileReadTool, FileWriterTool
+from crewai_tools import SerperDevTool, PGSearchTool, PDFSearchTool, FileReadTool
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -53,8 +53,7 @@ class JobappAgent():
             max_max_execution_time=3600,
             tools=[PGSearchTool(db_uri=db.connection_url,table_name='jobs'),
                    JobDatabaseTool(),
-                   FileReadTool(file_path=cv_path),
-                   FileWriterTool()],
+                   FileReadTool(file_path=cv_path)],
             respect_context_window=True
         )
 
@@ -68,6 +67,7 @@ class JobappAgent():
     def optimization_task(self) -> Task:
         return Task(
             config=self.tasks_config['optimization_task'],
+            context=[self.research_task()],
         )
 
 
@@ -76,8 +76,8 @@ class JobappAgent():
         """Creates the JobappAgent crew"""
 
         return Crew(
-            agents=self.agents,
-            tasks=self.tasks,
+            agents=[self.researcher(), self.optimizer()],
+            tasks=[self.research_task(), self.optimization_task()],
             process=Process.sequential,
             verbose=True,
         )

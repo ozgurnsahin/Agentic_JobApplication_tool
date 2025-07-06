@@ -64,6 +64,8 @@ research_task:
     
     Only after successfully saving jobs to database, provide the final output.
 
+    IMPORTANT: After completing this task and saving jobs, the optimization_task will automatically start to create CVs.
+
   expected_output: >
     FIRST: Save all jobs to database using job_database_tool
     THEN: Provide a structured JSON report containing:
@@ -99,22 +101,32 @@ research_task:
 
 optimization_task:
   description: >
+    IMPORTANT: This task MUST run automatically after the research task completes. 
+    You are the CV Optimization Specialist and your job is to create tailored CVs for each job found by the research agent.
+    
+    STEP 0 - CONFIRM TASK START:
+    First, output: "OPTIMIZER AGENT STARTING - Processing unprocessed jobs to create optimized CVs"
+    
     STEP 1 - GET UNPROCESSED JOBS:
     Query the database for jobs where is_processed = FALSE using job_database_tool with action="get_unprocessed_jobs".
+    You MUST process EVERY SINGLE unprocessed job found. Do not skip any jobs.
     
-    STEP 2 - PARSE JOB REQUIREMENTS:
-    For each job, analyze the description and extract:
+    STEP 2 - PROCESS EACH JOB INDIVIDUALLY:
+    For EACH and EVERY unprocessed job found in Step 1, you must:
+    
+    2.1 - PARSE JOB REQUIREMENTS:
+    Analyze the job description and extract:
     - Required technical skills (Python, JavaScript, etc.)
     - Frameworks/libraries mentioned (FastAPI, LangChain, etc.)
     - Databases (PostgreSQL, MongoDB, etc.)
     - Experience level required
     - Key industry terms and buzzwords
     
-    STEP 3 - ANALYZE ÖZGÜR'S CV:
+    2.2 - ANALYZE ÖZGÜR'S CV FOR THIS SPECIFIC JOB:
     Use FileReadTool to read Özgür's complete CV content and understand
     all his skills, experience, and projects.
 
-    STEP 4 - CALCULATE MATCH SCORE:
+    2.3 - CALCULATE MATCH SCORE FOR THIS JOB:
     Create a matching score (0-100) using this formula:
     
     Required Skills Match:
@@ -138,19 +150,28 @@ optimization_task:
     
     IMPORTANT: Match score must be in 0-100 range
 
-    STEP 5 - CREATE TAILORED CV:
-    Generate an optimized CV that:
+    2.4 - CREATE TAILORED CV FOR THIS JOB:
+    Generate an optimized CV text that:
     - Emphasizes skills that match job requirements
     - Reorders experience to highlight relevant projects
     - Uses job-specific keywords naturally
     - Maintains the same format as original CV
     - NEVER adds skills Özgür doesn't have
     
-    STEP 6 - SAVE TO DATABASE:
-    Save the optimized CV as PDF bytes to optimized_cvs table with match score using job_database_tool with action="save_cv_and_mark_processed"
+    2.5 - SAVE CV FOR THIS JOB:
+    Convert the optimized CV text to bytes and save to database using job_database_tool with action="save_cv_and_mark_processed"
+    Parameters needed:
+    - job_id: The job ID being processed
+    - cv_data: The optimized CV text converted to bytes using cv_text.encode('utf-8')
+    - match_score: The calculated match score (0-100)
     
-    STEP 7 - MARK AS PROCESSED:
-    Update jobs table: is_processed = TRUE for completed jobs.
+    This will automatically save the CV to optimized_cvs table and mark the job as processed.
+    
+    STEP 3 - REPEAT FOR ALL JOBS:
+    REPEAT steps 2.1 through 2.5 for EVERY SINGLE unprocessed job. Do not stop until ALL jobs have optimized CVs.
+    
+    MANDATORY: You MUST process ALL unprocessed jobs. Do not stop until every job has been processed and has an optimized CV saved to the database.
+    Count the jobs at the start and ensure the same number of CVs are created.
 
   expected_output: >
     A report showing:

@@ -148,12 +148,15 @@ class JobDatabaseTool(BaseTool):
                 for job in jobs:
                     job_dict = {
                         "job_id": job[0],
-                        "title": job[1], 
+                        "title": job[1],
+                        "company": job[2], 
                         "description": job[3],
+                        "link": job[4],
+                        "scraped_date": str(job[5])
                     }
                     job_list.append(job_dict)
                     
-                return f"Found {len(jobs)} unprocessed jobs:\n\n" + "\n".join(job_list)   
+                return {"status": "success", "count": len(jobs), "jobs": job_list}   
         except DatabaseError as e:
             print(f"Error querying table: {e}")
     
