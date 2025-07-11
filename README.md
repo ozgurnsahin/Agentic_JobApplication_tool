@@ -25,7 +25,7 @@ This portfolio project showcases **deep expertise in AI agent development**, inc
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Researcher    │    │    Optimizer     │    │    Database     │
-│     Agent       │───▶│     Agent        │───▶│     Layer       │
+│     Agent       │─▶  │     Agent        │─▶ │     Layer       │
 │                 │    │                  │    │                 │
 │ • CV Analysis   │    │ • Score Calc     │    │ • PostgreSQL    │
 │ • Job Search    │    │ • CV Tailoring   │    │ • Transaction   │
@@ -114,12 +114,6 @@ Match Score = (Required Skills Match × 60%) +
 - **Responsive Design**: Mobile-first approach with CSS Grid/Flexbox
 - **User Experience**: Intuitive interfaces with real-time feedback
 
-### **DevOps & Architecture**
-- **Package Management**: uv for Python dependencies, npm alternatives
-- **Environment Configuration**: Proper secrets management and environment isolation
-- **Database Migrations**: Schema management and version control
-- **Error Handling**: Comprehensive logging and exception management
-
 ### **Document Processing**
 - **PDF Generation**: ReportLab for professional document creation
 - **Content Analysis**: Advanced text extraction and parsing
@@ -203,55 +197,6 @@ uv run jobapp_agent
 - **Job Listings**: Browse discovered opportunities with filtering
 - **Agent Controls**: Start/stop agent processes and monitor progress
 
----
-
-## 🔬 Advanced Features
-
-### **Intelligent Retry Logic**
-The system implements sophisticated retry mechanisms for handling API rate limits and network issues:
-
-```python
-@retry(max_attempts=3, backoff_factor=2)
-async def search_jobs_with_retry(query: str) -> List[Job]:
-    # Intelligent retry with exponential backoff
-```
-
-### **Dynamic Prompt Engineering**
-Context-aware prompt generation based on CV content and job requirements:
-
-```python
-def generate_optimization_prompt(cv_content: str, job_desc: str) -> str:
-    # Dynamic prompt creation with skill mapping
-```
-
-### **Real-time Status Tracking**
-WebSocket-like polling for live updates of agent processing status:
-
-```javascript
-async updateAgentStatus() {
-    // Real-time status monitoring with automatic refresh
-}
-```
-
-
-### Development Setup
-```bash
-# Install development dependencies
-cd jobapp_agent && uv add --dev pytest black flake8
-cd backend && pip install -r requirements-dev.txt
-```
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🌟 Acknowledgments
-
-- **CrewAI** for the powerful agent orchestration framework
-- **OpenAI** for state-of-the-art language models
-- **FastAPI** for the excellent async web framework
-- **PostgreSQL** for robust data persistence
