@@ -5,6 +5,7 @@ from typing import Dict
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
+from crewai import Crew, Process
 
 
 project_root = Path(__file__).resolve().parent.parent
@@ -71,6 +72,61 @@ class AgentRunner:
             "status": "running"
         }
     
+    def start_cv_generation(self) -> Dict:
+        """Start CV generation for unprocessed jobs only"""
+        with self.status_lock:
+            if self.status == "running":
+                return {
+                    "message": "Agent is already running",
+                    "status": "running"
+                }
+            
+            self.jobs_found = 0
+            self.cvs_created = 0
+            self.error_message = None
+            self.status = "running"
+        
+        self.current_task = self.executor.submit(self._run_cv_generation)
+        
+        logger.info("CV generation started in background")
+        return {
+            "message": "CV generation started successfully",
+            "status": "running"
+        }
+    
+    def _run_cv_generation(self):
+        """Internal method to run only CV generation (optimizer agent)"""
+        try:
+            logger.info("Starting CV generation for unprocessed jobs")
+            
+            inputs = {
+                'topic': 'AI LLMs',
+                'current_year': str(datetime.now().year),
+                'current_date': datetime.now().strftime('%Y-%m-%d'),
+                'current_month': datetime.now().strftime('%Y-%m')
+            }
+            
+            agent_instance = JobappAgent()
+            optimizer_crew = Crew(
+                agents=[agent_instance.optimizer()],
+                tasks=[agent_instance.optimization_task()],
+                process=Process.sequential,
+                verbose=True,
+            )
+            
+            result = optimizer_crew.kickoff(inputs=inputs)
+            
+            with self.status_lock:
+                self.status = "completed"
+                
+            logger.info("CV generation completed successfully")
+            
+        except Exception as e:
+            logger.error(f"CV generation failed: {e}")
+            with self.status_lock:
+                self.status = "error"
+                self.error_message = str(e)
+
     def _run_agent(self):
         """Internal method to run the agent"""
         try:

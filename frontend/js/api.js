@@ -86,6 +86,10 @@ class API {
         return this.post('/agent/start', {});
     }
     
+    async startCVGeneration() {
+        return this.post('/agent/start-cv-generation', {});
+    }
+    
     async getAgentStatus() {
         return this.get('/agent/status');
     }
@@ -105,6 +109,10 @@ class API {
     }
     
     // CVs API methods
+    async getCVs() {
+        return this.get('/cvs');
+    }
+    
     async downloadCV(cvId) {
         const endpoint = `/cvs/${cvId}/download`;
         return this.request(endpoint, {

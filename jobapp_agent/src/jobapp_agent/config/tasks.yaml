@@ -151,21 +151,23 @@ optimization_task:
     IMPORTANT: Match score must be in 0-100 range
 
     2.4 - CREATE TAILORED CV FOR THIS JOB:
-    Generate an optimized CV text that:
+    First, generate an optimized CV text content that:
     - Emphasizes skills that match job requirements
     - Reorders experience to highlight relevant projects
     - Uses job-specific keywords naturally
-    - Maintains the same format as original CV
+    - Maintains the same structure as original CV
     - NEVER adds skills Özgür doesn't have
     
+    Then, convert this text to PDF using the pdf_generator_tool with the optimized CV text.
+    
     2.5 - SAVE CV FOR THIS JOB:
-    Convert the optimized CV text to bytes and save to database using job_database_tool with action="save_cv_and_mark_processed"
+    Save the generated PDF content to database using job_database_tool with action="save_cv_and_mark_processed"
     Parameters needed:
     - job_id: The job ID being processed
-    - cv_data: The optimized CV text converted to bytes using cv_text.encode('utf-8')
+    - cv_data: The PDF bytes returned from pdf_generator_tool
     - match_score: The calculated match score (0-100)
     
-    This will automatically save the CV to optimized_cvs table and mark the job as processed.
+    This will automatically save the PDF CV to optimized_cvs table and mark the job as processed.
     
     STEP 3 - REPEAT FOR ALL JOBS:
     REPEAT steps 2.1 through 2.5 for EVERY SINGLE unprocessed job. Do not stop until ALL jobs have optimized CVs.

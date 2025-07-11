@@ -112,6 +112,33 @@ class DatabaseManager:
             logger.error(f"Error fetching CV data: {e}")
             raise
     
+    def get_all_cvs(self) -> List[Dict]:
+        """Get all CVs with their associated job information"""
+        try:
+            with self as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    cursor.execute("""
+                        SELECT 
+                            cv.cv_id,
+                            cv.job_id,
+                            cv.match_score,
+                            cv.created_at as cv_created_at,
+                            j.title as job_title,
+                            j.company,
+                            j.link as job_link,
+                            j.source,
+                            j.scraped_date
+                        FROM optimized_cvs cv
+                        LEFT JOIN jobs j ON cv.job_id = j.job_id
+                        ORDER BY cv.created_at DESC
+                    """)
+                    cvs = cursor.fetchall()
+                    logger.info(f"Retrieved {len(cvs)} CVs from database")
+                    return [dict(cv) for cv in cvs]
+        except Exception as e:
+            logger.error(f"Error fetching CVs: {e}")
+            raise
+
     def get_basic_stats(self) -> Dict:
         """Get basic job and CV statistics"""
         try:

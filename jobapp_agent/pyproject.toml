@@ -12,6 +12,7 @@ dependencies = [
     "sqlalchemy>=2.0.41",
     "duckduckgo-search>=6.0.0",
     "langchain-ollama>=0.1.0",
+    "reportlab>=4.0.0",
 ]
 
 [project.scripts]

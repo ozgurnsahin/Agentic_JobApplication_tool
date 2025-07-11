@@ -1,5 +1,6 @@
 from .db.database import CrewAIJobStorage
-from .tools.job_database_tool import JobDatabaseTool 
+from .tools.job_database_tool import JobDatabaseTool
+from .tools.pdf_generator_tool import PDFGeneratorTool
 
 from typing import List
 import os
@@ -53,7 +54,8 @@ class JobappAgent():
             max_max_execution_time=3600,
             tools=[PGSearchTool(db_uri=db.connection_url,table_name='jobs'),
                    JobDatabaseTool(),
-                   FileReadTool(file_path=cv_path)],
+                   FileReadTool(file_path=cv_path),
+                   PDFGeneratorTool()],
             respect_context_window=True
         )
 

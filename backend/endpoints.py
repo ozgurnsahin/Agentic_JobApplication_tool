@@ -4,7 +4,7 @@ import logging
 
 from database import DatabaseManager
 from models import (
-    JobListResponse, JobResponse,
+    JobListResponse, JobResponse, CVListResponse, CVResponse,
     AgentStatusResponse, StartAgentResponse
 )
 from agent_runner import AgentRunner
@@ -25,6 +25,16 @@ async def start_agent():
         return StartAgentResponse(**result)
     except Exception as e:
         logger.error(f"Failed to start agent: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/agent/start-cv-generation", response_model=StartAgentResponse)
+async def start_cv_generation():
+    """Start CV generation for unprocessed jobs only"""
+    try:
+        result = agent_runner.start_cv_generation()
+        return StartAgentResponse(**result)
+    except Exception as e:
+        logger.error(f"Failed to start CV generation: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/agent/status", response_model=AgentStatusResponse)
@@ -74,6 +84,33 @@ async def get_jobs(
         logger.error(f"Failed to get jobs: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/cvs", response_model=CVListResponse)
+async def get_cvs():
+    """Get all CVs with their associated job information"""
+    try:
+        cvs_data = db_manager.get_all_cvs()
+        
+        cvs = []
+        for cv_data in cvs_data:
+            cv = CVResponse(
+                cv_id=cv_data['cv_id'],
+                job_id=cv_data['job_id'],
+                match_score=cv_data['match_score'],
+                created_at=cv_data['cv_created_at'],
+                job_title=cv_data['job_title'],
+                company=cv_data['company']
+            )
+            cvs.append(cv)
+        
+        return CVListResponse(
+            cvs=cvs,
+            total=len(cvs),
+            message=f"Retrieved {len(cvs)} CVs"
+        )
+    except Exception as e:
+        logger.error(f"Failed to get CVs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/cvs/{cv_id}/download")
 async def download_cv(cv_id: int):
     """Download specific CV file as PDF"""
@@ -83,8 +120,16 @@ async def download_cv(cv_id: int):
         if not cv_data:
             raise HTTPException(status_code=404, detail=f"CV with ID {cv_id} not found")
 
+        # CV data should be stored as PDF bytes in BYTEA
+        if isinstance(cv_data, (bytes, memoryview)):
+            pdf_content = bytes(cv_data)
+        else:
+            # If it's text, we need to handle it differently
+            logger.warning(f"CV {cv_id} appears to be text data, not PDF")
+            pdf_content = str(cv_data).encode('utf-8')
+
         return Response(
-            content=cv_data,
+            content=pdf_content,
             media_type="application/pdf",
             headers={
                 "Content-Disposition": f"attachment; filename=optimized_cv_{cv_id}.pdf"
