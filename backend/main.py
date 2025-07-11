@@ -1,8 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import sys
+from pathlib import Path
 
-sys.path.append('jobapp_agent/src')
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root / "jobapp_agent" / "src"))
+
+from jobapp_agent.db.config import GenerateConfig
+from endpoints import router
+
+
 
 app = FastAPI(
     title="Job Application AI Backend",
@@ -18,6 +25,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(router)
+
 @app.get("/")
 async def root():
     return {
@@ -29,8 +38,6 @@ async def root():
 @app.get("/health")
 async def health_check():
     try:
-        # Test import of AI agent modules
-        from jobapp_agent.db.config import GenerateConfig
         db_config = GenerateConfig.config()
         
         return {
