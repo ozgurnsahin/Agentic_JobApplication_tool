@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import sys
 from pathlib import Path
 
@@ -9,7 +11,8 @@ sys.path.insert(0, str(project_root / "jobapp_agent" / "src"))
 from jobapp_agent.db.config import GenerateConfig
 from endpoints import router
 
-
+# Frontend directory
+frontend_dir = project_root / "frontend"
 
 app = FastAPI(
     title="Job Application AI Backend",
@@ -27,10 +30,18 @@ app.add_middleware(
 
 app.include_router(router)
 
+# Mount static files for frontend
+app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
+
 @app.get("/")
-async def root():
+async def serve_frontend():
+    """Serve the frontend index.html"""
+    return FileResponse(str(frontend_dir / "index.html"))
+
+@app.get("/api")
+async def api_root():
     return {
-        "message": "Job Application AI Backend is running",
+        "message": "Job Application AI Backend API is running",
         "status": "healthy",
         "version": "1.0.0"
     }

@@ -1,0 +1,60 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- AI Icon with Circuit Pattern -->
+  <g transform="translate(5, 5)">
+    <!-- Main AI Container -->
+    <rect x="0" y="0" width="50" height="50" rx="12" fill="url(#iconGradient)" />
+    
+    <!-- Circuit Board Pattern -->
+    <g stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.3">
+      <line x1="8" y1="15" x2="20" y2="15" />
+      <line x1="20" y1="15" x2="20" y2="25" />
+      <line x1="20" y1="25" x2="35" y2="25" />
+      <line x1="30" y1="35" x2="42" y2="35" />
+      <line x1="30" y1="35" x2="30" y2="25" />
+      <circle cx="20" cy="15" r="2" fill="#ffffff" />
+      <circle cx="20" cy="25" r="2" fill="#ffffff" />
+      <circle cx="30" cy="25" r="2" fill="#ffffff" />
+    </g>
+    
+    <!-- AI Letters -->
+    <text x="12" y="32" font-family="'Arial', sans-serif" font-size="16" font-weight="bold" fill="#ffffff">AI</text>
+    
+    <!-- Document/CV Icon -->
+    <g transform="translate(35, 12)">
+      <rect x="0" y="0" width="10" height="14" rx="1" fill="#ffffff" opacity="0.8" />
+      <line x1="2" y1="4" x2="8" y2="4" stroke="#1e40af" stroke-width="0.5" />
+      <line x1="2" y1="6" x2="8" y2="6" stroke="#1e40af" stroke-width="0.5" />
+      <line x1="2" y1="8" x2="6" y2="8" stroke="#1e40af" stroke-width="0.5" />
+    </g>
+    
+    <!-- Search Magnifying Glass -->
+    <g transform="translate(40, 32)">
+      <circle cx="4" cy="4" r="3" stroke="#ffffff" stroke-width="1.5" fill="none" />
+      <line x1="6" y1="6" x2="8" y2="8" stroke="#ffffff" stroke-width="1.5" />
+    </g>
+  </g>
+  
+  <!-- JobApp Text -->
+  <text x="65" y="25" font-family="'Segoe UI', 'Arial', sans-serif" font-size="18" font-weight="700" fill="url(#logoGradient)">JobApp</text>
+  
+  <!-- AI Agent Text -->
+  <text x="65" y="45" font-family="'Segoe UI', 'Arial', sans-serif" font-size="14" font-weight="500" fill="#6b7280">AI Agent</text>
+  
+  <!-- Decorative Elements -->
+  <g transform="translate(160, 15)">
+    <circle cx="5" cy="5" r="2" fill="#3b82f6" opacity="0.6" />
+    <circle cx="15" cy="10" r="1.5" fill="#8b5cf6" opacity="0.4" />
+    <circle cx="25" cy="5" r="1" fill="#a855f7" opacity="0.5" />
+  </g>
+</svg>
