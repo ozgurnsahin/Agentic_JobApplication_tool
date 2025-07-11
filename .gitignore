@@ -12,6 +12,7 @@ __pycache__/
 *.bin
 *.ipynb
 *.md
+*.json
 
 # Distribution / packaging
 .Python

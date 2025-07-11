@@ -29,8 +29,6 @@ app.add_middleware(
 )
 
 app.include_router(router)
-
-# Mount static files for frontend
 app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
 
 @app.get("/")

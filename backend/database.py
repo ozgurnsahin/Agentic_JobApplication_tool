@@ -45,7 +45,7 @@ class DatabaseManager:
                                cv.match_score, j.scraped_date, j.is_processed, 
                                j.created_at, cv.created_at as cv_created_at
                         FROM jobs j
-                        JOIN optimized_cvs cv ON j.job_id = cv.job_id
+                        LEFT JOIN optimized_cvs cv ON j.job_id = cv.job_id
                         ORDER BY j.created_at DESC
                     """)
                     jobs = cursor.fetchall()
